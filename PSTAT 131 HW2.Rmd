@@ -1,0 +1,27 @@
+---
+title: "PSTAT 131 Homework 2"
+author: "Brett Goldman"
+date: "10/3/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup
+```{r}
+library(tidyverse)
+library(tidymodels)
+```
+
+```{r}
+abalone<-read_csv(file="~/Documents/School/PSTAT 131/homework-2/data/abalone.csv")
+```
+
+# Question 1:
+
+```{r}
+abalone$age<-abalone$rings+5
+```
+
