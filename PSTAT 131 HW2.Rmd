@@ -23,5 +23,25 @@ abalone<-read_csv(file="~/Documents/School/PSTAT 131/homework-2/data/abalone.csv
 
 ```{r}
 abalone$age<-abalone$rings+5
+hist(abalone$age, main="Histogram of Abalone Age", xlab="Age")
+```
+Looking at the histogram of age, most abalone in this dataset are between 12-15 years old. There are some very young and very old abelone as well, but it's mostly in that 12-15 range.
+
+# Question 2:
+
+```{r}
+# 80/20 split
+set.seed(3005)
+abalone_split<-initial_split(abalone, prop=0.8, strata=age)
+abalone_train<-training(abalone_split)
+abalone_test<-testing(abalone_split)
+```
+
+
+# Question 3:
+You shouldn't use rings to predict age because age is just rings+5. They have the same distribution just shifted over 5.
+```{r}
+simple_abalone_recipe<-
+  recipe(age~)
 ```
 
