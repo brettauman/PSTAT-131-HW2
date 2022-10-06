@@ -42,6 +42,74 @@ abalone_test<-testing(abalone_split)
 You shouldn't use rings to predict age because age is just rings+5. They have the same distribution just shifted over 5.
 ```{r}
 simple_abalone_recipe<-
-  recipe(age~)
+  recipe(age~type+longest_shell+diameter+height+whole_weight+
+           shucked_weight+viscera_weight+shell_weight, data=abalone_train) %>% # recipe
+  step_dummy(all_nominal_predictors()) 
+```
+%>% # dummy
+
+```{r}
+abalone_recipe<-simple_abalone_recipe %>%
+  step_interact(terms = ~starts_with("type"):shucked_weight + longest_shell:diameter + shucked_weight:shell_weight)
+```
+
+```{r}
+abalone_recipe<-abalone_recipe %>% 
+  step_center(starts_with("type"), longest_shell, diameter, height, whole_weight,
+           shucked_weight, viscera_weight, shell_weight)
+```
+
+```{r}
+abalone_recipe<-abalone_recipe %>% 
+  step_scale(starts_with("type"), longest_shell, diameter, height, whole_weight,
+             shucked_weight, viscera_weight, shell_weight) # scale
+```
+
+# Question 4:
+```{r}
+abalone_lm_model<-linear_reg() %>% 
+  set_engine("lm")
+```
+
+# Question 5:
+```{r}
+abalone_lm_wflow<-workflow() %>% 
+  add_model(abalone_lm_model) %>% 
+  add_recipe(abalone_recipe)
+```
+
+# Question 6:
+```{r}
+abalone_lm_fit<-fit(abalone_lm_wflow, abalone_train)
+Q6Abalone<-data.frame(type="F", longest_shell=.5, diameter=.1, height=.3, 
+                      whole_weight=4, shucked_weight=1, viscera_weight=2, shell_weight=1)
+```
+
+```{r}
+(abalonepredict<-predict(abalone_lm_fit, new_data=Q6Abalone))
+```
+
+The age of a hypothetical female abalone with longest_shell = 0.50, diameter = 0.10, height = 0.30, whole_weight = 4, shucked_weight = 1, viscera_weight = 2, shell_weight = 1 is 17.92631.
+
+# Question 7:
+```{r}
+library(yardstick)
+abalone_train_res<-predict(abalone_lm_fit, new_data = abalone_train %>% select(-age))
+abalone_train_res %>% 
+  head()
+```
+
+```{r}
+abalone_train_res<-bind_cols(abalone_train_res, abalone_train %>% select(age))
+abalone_train_res %>% 
+  head()
+```
+```{r}
+rmse(abalone_train_res, truth=age, estimate=.pred)
+```
+
+```{r}
+abalone_metrics<-metric_set(rmse, rsq, mae)
+abalone_metrics(abalone_train_res, truth=age, estimate=.pred)
 ```
 
