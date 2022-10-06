@@ -89,7 +89,7 @@ Q6Abalone<-data.frame(type="F", longest_shell=.5, diameter=.1, height=.3,
 (abalonepredict<-predict(abalone_lm_fit, new_data=Q6Abalone))
 ```
 
-The age of a hypothetical female abalone with longest_shell = 0.50, diameter = 0.10, height = 0.30, whole_weight = 4, shucked_weight = 1, viscera_weight = 2, shell_weight = 1 is 17.92631.
+The age of a hypothetical female abalone with longest_shell = 0.50, diameter = 0.10, height = 0.30, whole_weight = 4, shucked_weight = 1, viscera_weight = 2, shell_weight = 1 is shown above.
 
 # Question 7:
 ```{r}
@@ -113,3 +113,4 @@ abalone_metrics<-metric_set(rmse, rsq, mae)
 abalone_metrics(abalone_train_res, truth=age, estimate=.pred)
 ```
 
+The R squared value is low, so we can say that our model did not do a great job of modeling the true age of the abalone.
